@@ -5,13 +5,18 @@ before_action :only_current_user, only: [:edit, :update]
     @newbook = Book.new
     @book = Book.find(params[:id])
     @user = @book.user
-    @book_comments = BookComment.all
+    @book_comments = @book.book_comments
     @book_comment = BookComment.new
   end
 
   def index
+
     @book = Book.new
-    @books = Book.all
+    #いいねのランキング順にする
+    # @books = Book.all_ranks
+    @books = Book.one_week_ranks
+
+
   end
 
   def create
@@ -49,7 +54,7 @@ before_action :only_current_user, only: [:edit, :update]
   def book_params
     params.require(:book).permit(:title, :body)
   end
-  
+
   def only_current_user
     book = Book.find(params[:id])
     redirect_to books_path unless book.user_id == current_user.id

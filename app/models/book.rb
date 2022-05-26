@@ -23,4 +23,22 @@ class Book < ApplicationRecord
       @book = Book.all
     end
   end
+
+  def self.one_week_ranks
+    #@books = Book.includes(:favorites).sort {|a,b| b.favorites.size <=> a.favorites.size}
+    from = DateTime.now.ago(7.days)
+    to = DateTime.now
+    puts("ディバッグ")
+    puts(from)
+    @books = Book.includes(:favorites).sort {
+      |a,b|
+      b.favorites.includes(:favorites).where(created_at: from...to).size <=>
+      a.favorites.includes(:favorites).where(created_at: from...to).size}
+  end
+
+  def self.before_one_week
+    puts(DateTime.now.ago(7.days))
+    date = DateTime.now.ago(7.days)
+    @books = Book.where("created_at >= ?", date)
+  end
 end
