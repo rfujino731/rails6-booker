@@ -10,13 +10,9 @@ before_action :only_current_user, only: [:edit, :update]
   end
 
   def index
-
     @book = Book.new
     #いいねのランキング順にする
-    # @books = Book.all_ranks
     @books = Book.one_week_ranks
-
-
   end
 
   def create

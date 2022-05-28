@@ -20,6 +20,10 @@ class User < ApplicationRecord
   # 一覧画面で使う
   has_many :followings, through: :relationships, source: :followed
   has_many :followers, through: :reverse_of_relationships, source: :follower
+  
+  # DMで使用する
+  has_many :messages, dependent: :destroy
+  has_many :entries, dependent: :destroy
 
 
   # def get_profile_image(width, height)
