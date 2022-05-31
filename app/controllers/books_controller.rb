@@ -1,5 +1,6 @@
 class BooksController < ApplicationController
 before_action :only_current_user, only: [:edit, :update]
+impressionist :actions=> [:show]
 
   def show
     @newbook = Book.new
@@ -7,6 +8,27 @@ before_action :only_current_user, only: [:edit, :update]
     @user = @book.user
     @book_comments = @book.book_comments
     @book_comment = BookComment.new
+    # 自主的にPV数を伸ばす事が出来ないように、今回はip_addressにてPV数
+    impressionist(@book, nil, unique: [:ip_address])
+    # impressionist(@book, nil)
+    
+    unless @user.id == current_user.id
+      @currentUserEntry=Entry.where(user_id: current_user.id)
+      @userEntry=Entry.where(user_id: @user.id)
+      @currentUserEntry.each do |cu|
+        @userEntry.each do |u|
+          if cu.room_id == u.room_id then
+            @isRoom = true
+            @roomId = cu.room_id
+          end
+        end
+      end
+      if @isRoom
+      else
+        @room = Room.new
+        @entry = Entry.new
+      end
+    end
   end
 
   def index
